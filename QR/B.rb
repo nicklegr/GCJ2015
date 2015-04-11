@@ -76,7 +76,7 @@ def dfs(turn, arr)
   exp_turn = turn + max
 #puts "#{exp_turn}t: " + arr.join(' ')
   if exp_turn < $min_turn
-#puts "#{exp_turn}t: " + arr.join(' ')
+# puts "#{exp_turn}t: " + arr.join(' ')
     $min_turn = exp_turn
   end
 
@@ -87,20 +87,16 @@ def dfs(turn, arr)
   dfs(turn + 1, n)
 
   # divide
-  for i in 0...arr.size
-    v = arr[i]
-    next if v <= 3
+  max_i = max_index(arr)
+  v = arr[max_i]
+  return if v <= 3
 
-    a = b = 0
-    if v & 1 == 1
-      a = v / 2
-      b = v / 2 + 1
-    else
-      a = b = v / 2
-    end
+  for i in 1..v-1
+    a = i
+    b = v - i
 
     n = arr.dup
-    n[i] = a
+    n[max_i] = a
     n << b
     dfs(turn + 1, n)
   end
@@ -119,7 +115,7 @@ cases = readline().to_i
   ri
   arr = ris
 
-# puts arr.join(" ")
+#puts arr.join(" ")
   dfs(0, arr)
 
   puts "Case ##{case_index}: #{$min_turn}"
