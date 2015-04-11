@@ -56,38 +56,54 @@ def max_index(arr)
   max_i
 end
 
+def max(a, b)
+  if a < b
+    b
+  else
+    a
+  end
+end
+
 $min_turn = 99999
+$already = {}
 
 def dfs(turn, arr)
+  arr.sort!
+  return if $already[arr.hash]
+  $already[arr.hash] = 1
+
   max = arr.max
   exp_turn = turn + max
+#puts "#{exp_turn}t: " + arr.join(' ')
   if exp_turn < $min_turn
-# puts "#{exp_turn}t: " + arr.join(' ')
+#puts "#{exp_turn}t: " + arr.join(' ')
     $min_turn = exp_turn
   end
 
   return if max == 1
 
   # eat
-  n = arr.map do |e| e - 1 end
+  n = arr.map do |e| max(e - 1, 0) end
   dfs(turn + 1, n)
 
   # divide
-  max_i = max_index(arr)
-  v = arr[max_i]
+  for i in 0...arr.size
+    v = arr[i]
+    next if v <= 3
 
-  a = b = 0
-  if v & 1 == 1
-    a = v / 2
-    b = v / 2 + 1
-  else
-    a = b = v / 2
+    a = b = 0
+    if v & 1 == 1
+      a = v / 2
+      b = v / 2 + 1
+    else
+      a = b = v / 2
+    end
+
+    n = arr.dup
+    n[i] = a
+    n << b
+    dfs(turn + 1, n)
   end
-
-  n = arr.dup
-  n[max_i] = a
-  n << b
-  dfs(turn + 1, n)
 end
 
 # main
@@ -98,10 +114,12 @@ cases = readline().to_i
 
 (1 .. cases).each do |case_index|
   $min_turn = 99999
+  $already = {}
 
   ri
   arr = ris
 
+# puts arr.join(" ")
   dfs(0, arr)
 
   puts "Case ##{case_index}: #{$min_turn}"
