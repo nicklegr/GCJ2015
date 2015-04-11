@@ -78,48 +78,52 @@ def conv(str)
   ret
 end
 
-def find_i(arr)
-# putsd arr.join('')
-  return if arr.empty?
+def find_i(arr, b, e)
+# putsd "#{arr.join('')} #{b} #{e}"
+# pp b, e
+  return if b > e
 
-  v = arr.shift
+  v = arr[b]
   loop do
-    break if arr.empty?
-
     if v == 1
-      find_k(arr.dup)
+      find_k(arr, b+1, e)
       return if $found
     end
 
-    v = TBL[v][arr.shift]
+    b += 1
+    break if b > e
+# puts "#{v} #{arr[b]}"
+    v = TBL[v][arr[b]]
   end
 end
 
-def find_k(arr)
-# putsd arr.join('')
-  return if arr.empty?
+def find_k(arr, b, e)
+# putsd "#{arr.join('')} #{b} #{e}"
+  return if b > e
 
-  v = arr.pop
+  v = arr[e]
   loop do
-    break if arr.empty?
-
     if v == 3
-      is_j(arr.dup)
+      is_j(arr, b, e-1)
       return if $found
     end
 
-    v = TBL[arr.pop][v]
+    e -= 1
+    break if b > e
+    v = TBL[arr[e]][v]
   end
 end
 
-def is_j(arr)
-# putsd arr.join('')
-  return if arr.empty?
+def is_j(arr, b, e)
+# putsd "#{arr.join('')} #{b} #{e}"
+  return if b > e
 
-  v = arr.shift
+  v = arr[b]
+
   loop do
-    break if arr.empty?
-    v = TBL[v][arr.shift]
+    b += 1
+    break if b > e
+    v = TBL[v][arr[b]]
   end
 
   if v == 2
@@ -141,7 +145,7 @@ cases = readline().to_i
 
   $found = false
   arr = conv(str)
-  find_i(arr)
+  find_i(arr, 0, arr.size-1)
 
   puts "Case ##{case_index}: #{$found ? 'YES' : 'NO'}"
 
