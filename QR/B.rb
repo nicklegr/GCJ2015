@@ -65,6 +65,7 @@ def max(a, b)
 end
 
 $min_turn = 99999
+$min_arr = []
 $already = {}
 
 def dfs(turn, arr)
@@ -76,15 +77,16 @@ def dfs(turn, arr)
   exp_turn = turn + max
 #puts "#{exp_turn}t: " + arr.join(' ')
   if exp_turn < $min_turn
-# puts "#{exp_turn}t: " + arr.join(' ')
+#puts "#{exp_turn}t: " + arr.join(' ')
     $min_turn = exp_turn
+    $min_arr = arr
   end
 
   return if max == 1
 
   # eat
-  n = arr.map do |e| max(e - 1, 0) end
-  dfs(turn + 1, n)
+  # n = arr.map do |e| max(e - 1, 0) end
+  # dfs(turn + 1, n)
 
   # divide
   max_i = max_index(arr)
@@ -104,6 +106,17 @@ end
 
 # main
 t_start = Time.now
+
+for i in 0..50
+  $min_turn = 99999
+  $min_arr = []
+  $already = {}
+  dfs(0, [i])
+  puts "#{i} => #{$min_turn}t: #{$min_arr.join(' ')}"
+end
+
+
+__END__
 
 # 問題に応じて
 cases = readline().to_i
