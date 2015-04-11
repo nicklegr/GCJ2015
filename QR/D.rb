@@ -74,7 +74,7 @@ cases = readline().to_i
       when 1
         "GABRIEL"
       when 2
-        if w == 1 && h == 3
+        if (w == 1 && h == 3) || (w == 3 && h == 3)
           "RICHARD"
         else
           "GABRIEL"
