@@ -107,31 +107,68 @@ end
 # main
 t_start = Time.now
 
-for i in 0..50
-  $min_turn = 99999
-  $min_arr = []
-  $already = {}
-  dfs(0, [i])
-  puts "#{i} => #{$min_turn}t: #{$min_arr.join(' ')}"
-end
-
-
-__END__
-
 # 問題に応じて
 cases = readline().to_i
 
 (1 .. cases).each do |case_index|
-  $min_turn = 99999
-  $already = {}
-
   ri
   arr = ris
 
-#puts arr.join(" ")
-  dfs(0, arr)
+  # ds[i] == i枚のパンケーキがある皿の数
+  ds = Array.new(1001, 0)
 
-  puts "Case ##{case_index}: #{$min_turn}"
+puts "---"
+puts arr.join(" ")
+  arr.each do |e|
+    ds[e] += 1
+  end
+
+  min_turn = 9999
+  turn = 0
+  last_max_i = 1000
+  loop do
+    max_i = -1
+    last_max_i.downto(0) do |i|
+      if ds[i] != 0
+        last_max_i = max_i = i
+        break
+      end
+    end
+
+    raise if max_i == -1
+
+    if turn + max_i < min_turn
+      min_turn = turn + max_i
+    end
+
+    # 3枚以下は分割不要
+    break if max_i <= 3
+
+    # 一番枚数が多い皿がボトルネックなので減らす
+    count = ds[max_i]
+    v = max_i
+
+    # 31 * 31 = 961 (< 1000)
+    31.downto(2) do |factor|
+      if v >= factor * factor
+        # factor等分する
+        divided = v / factor
+        mod = v % factor
+puts ds[0..10].join(" ")
+puts "factor:#{factor}, divided:#{divided}, mod:#{mod}"
+        ds[factor] += divided * count
+        ds[mod] += count if mod != 0
+        ds[max_i] = 0
+
+        turn += divided * count
+        turn -= count if mod == 0
+
+        break
+      end
+    end
+  end
+
+  puts "Case ##{case_index}: #{min_turn}"
 
   # progress
   trigger = 
