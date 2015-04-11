@@ -68,6 +68,8 @@ cases = readline().to_i
 
   if x > r && x > c
     answer = "RICHARD"
+  elsif (r*c) % x != 0
+    answer = "RICHARD"
   else
     answer =
       case x
