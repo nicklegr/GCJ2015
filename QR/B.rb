@@ -148,26 +148,50 @@ puts arr.join(" ")
     count = ds[max_i]
     v = max_i
 
-    # 31 * 31 = 961 (< 1000)
+    best_factor = nil
+    best_turn = nil
+
     31.downto(2) do |factor|
       if v >= factor * factor
         # factor等分する
         divided = v / factor
         mod = v % factor
-puts ds[0..10].join(" ")
-puts "factor:#{factor}, divided:#{divided}, mod:#{mod}"
-        ds[factor] += divided * count
-        ds[mod] += count if mod != 0
-        ds[max_i] = 0
 
-        turn += divided * count
-        turn -= count if mod == 0
+        t = divided
+        t += 1 if mod != 0
 
-        break
+        t += factor - 1
+        t += 1 if mod != 0
+
+        if !best_turn || t <= best_turn
+          best_turn = t
+
+          if best_factor
+            best_factor = factor if factor < best_factor
+          else
+            best_factor = factor
+          end
+        end
       end
     end
+
+    raise unless best_factor
+
+    # factor等分する
+    divided = v / best_factor
+    mod = v % best_factor
+puts ds[0..30].join(" ")
+puts "best_factor:#{best_factor}, divided:#{divided}, mod:#{mod}"
+    ds[best_factor] += divided * count
+    ds[mod] += count if mod != 0
+    ds[max_i] = 0
+
+    turn += divided * count
+    turn -= count if mod == 0
+puts "turn: #{turn}"
   end
 
+puts ds[0..30].join(" ")
   puts "Case ##{case_index}: #{min_turn}"
 
   # progress
