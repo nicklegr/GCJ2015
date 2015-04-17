@@ -12,6 +12,14 @@ def putsd(*arg)
   end
 end
 
+def parr(arr)
+  puts arr.join(" ")
+end
+
+def parrd(arr)
+  putsd arr.join(" ")
+end
+
 def ri
   readline.to_i
 end
@@ -38,7 +46,7 @@ end
 
 def rws(count)
   words = []
-  for i in 1 .. count
+  count.times do
     words << readline.chomp
   end
   words
@@ -47,12 +55,10 @@ end
 # main
 t_start = Time.now
 
-# 問題に応じて
 cases = readline().to_i
 
 (1 .. cases).each do |case_index|
-  # readline().chomp
-  # readline().split
+  # write your code here
 
   puts "Case ##{case_index}: #{answer}"
 
