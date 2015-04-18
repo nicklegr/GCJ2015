@@ -82,15 +82,24 @@ parrd m
 ppd ended
 
   if n <= ended
+    n2 = n
     ended = 0
   else
-    n = n % ended
+    n2 = n % ended
+
+    if n2 == 0
+      if n / ended >= 2
+        n2 = n - (n / ended - 1) * ended
+# puts "n2: #{n2}"
+      else
+        n2 = n
+      end
+    end
+
     ended = 0
   end
 
-ppd ended, n
-
-  return b if n == 0
+ppd ended, n2
 
   wait = Array.new(b, 0)
 
@@ -99,7 +108,7 @@ ppd ended, n
       if wait[i] == 0
         wait[i] = m[i]
         ended += 1
-        if ended == n
+        if ended == n2
           return i + 1
         end
       end
