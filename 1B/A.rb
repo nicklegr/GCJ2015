@@ -90,18 +90,23 @@ def solve(n)
       c += target - v
       v = target
     else
-ppd c
+# ppd c
       str_n = n.to_s
       rev_v = "1" + ("0" * (len_n-1))
       best = nil
       best_cost = nil
       for i in 0...len_n
-        rev_v[len_n-1-i] = str_n[i]
+# ppd actual_rev_v
 
-        actual_rev_v = rev_v.gsub(/^0+/, '')
-ppd actual_rev_v
-        next if actual_rev_v.reverse.to_i > n
-        # @todo over?
+        actual_rev_v = nil
+        for k in 0..9
+          break if str_n[i].to_i - k < 0
+          rev_v[len_n-1-i] = (str_n[i].to_i - k).to_s
+          actual_rev_v = rev_v.gsub(/^0+/, '')
+          break if actual_rev_v.reverse.to_i <= n
+
+# putsd "#{actual_rev_v} #{actual_rev_v.reverse}, #{n}"
+        end
 
         cost = (actual_rev_v.to_i - v) + (n - actual_rev_v.reverse.to_i) + 1
         if !best_cost || cost < best_cost
