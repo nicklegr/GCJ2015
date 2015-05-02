@@ -100,18 +100,16 @@ def solve(n)
 
         actual_rev_v = nil
         for k in 0..9
-          break if str_n[i].to_i - k < 0
-          rev_v[len_n-1-i] = (str_n[i].to_i - k).to_s
+          rev_v[len_n-1-i] = k.to_s
           actual_rev_v = rev_v.gsub(/^0+/, '')
-          break if actual_rev_v.reverse.to_i <= n
+          next if actual_rev_v.reverse.to_i > n
 
+          cost = (actual_rev_v.to_i - v) + (n - actual_rev_v.reverse.to_i) + 1
+          if !best_cost || cost < best_cost
+            best = actual_rev_v.to_i
+            best_cost = cost
+          end
 # putsd "#{actual_rev_v} #{actual_rev_v.reverse}, #{n}"
-        end
-
-        cost = (actual_rev_v.to_i - v) + (n - actual_rev_v.reverse.to_i) + 1
-        if !best_cost || cost < best_cost
-          best = actual_rev_v.to_i
-          best_cost = cost
         end
       end
 
