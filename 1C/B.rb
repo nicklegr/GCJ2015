@@ -52,6 +52,17 @@ def rws(count)
   words
 end
 
+def check(str, target)
+  count = 0
+  p = str.size - target.size
+  l = target.size
+  for i in 0..p
+    count += 1 if str[i, l] == target
+  end
+
+  count
+end
+
 # main
 t_start = Time.now
 
@@ -67,7 +78,7 @@ cases = readline().to_i
   try = 0
   keyboard.each_char.to_a.repeated_permutation(s) do |str|
     str = str.join("")
-    c = str.scan(target).size
+    c = check(str, target)
 # putsd "#{str} #{c}" if c != 0
     c_total += c
     if c_max < c
