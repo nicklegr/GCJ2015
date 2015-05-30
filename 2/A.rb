@@ -61,9 +61,9 @@ cases = readline().to_i
   r, c = ris
   m = rws(r)
 
-# m.each do |l|
-#   puts l
-# end
+m.each do |l|
+  putsd l
+end
 
 
   changed = 0
@@ -130,15 +130,19 @@ cases = readline().to_i
     end
   end
 
+ppd goods
+
+bads.sort!
+bads.uniq!
 ppd bads
   still_bads = []
 
   # ループに突っ込ませるか、自分の方向いてる矢印に向ける
   bads.each do |b|
     ok = false
-    sx, sy = b[0], b[1]
+    sy, sx = b[0], b[1]
 
-    px, py = b[0], b[1]
+    py, px = b[0], b[1]
     loop do
       px += 1
       break if (px < 0 || px >= c || py < 0 || py >= r)
@@ -148,10 +152,11 @@ ppd bads
         ok = true
         break
       end
+      break if m[py][px] != '.' && m[py][px] != '<'
     end
-    break if ok
+    next if ok
 
-    px, py = b[0], b[1]
+    py, px = b[0], b[1]
     loop do
       px -= 1
       break if (px < 0 || px >= c || py < 0 || py >= r)
@@ -161,10 +166,11 @@ ppd bads
         ok = true
         break
       end
+      break if m[py][px] != '.' && m[py][px] != '>'
     end
-    break if ok
+    next if ok
 
-    px, py = b[0], b[1]
+    py, px = b[0], b[1]
     loop do
       py += 1
       break if (px < 0 || px >= c || py < 0 || py >= r)
@@ -174,10 +180,11 @@ ppd bads
         ok = true
         break
       end
+      break if m[py][px] != '.' && m[py][px] != '^'
     end
-    break if ok
+    next if ok
 
-    px, py = b[0], b[1]
+    py, px = b[0], b[1]
     loop do
       py -= 1
       break if (px < 0 || px >= c || py < 0 || py >= r)
@@ -187,15 +194,21 @@ ppd bads
         ok = true
         break
       end
+      break if m[py][px] != '.' && m[py][px] != 'v'
     end
-    break if ok
+    next if ok
 
     still_bads << b
   end
+
+m.each do |l|
+  putsd l
+end
+
 ppd still_bads
 
   # でもダメなら最寄りの矢印を自分に向ける
-  impossible = false
+  still2_bads = []
   still_bads.each do |b|
     sy, sx = b[0], b[1]
     py, px = b[0], b[1]
@@ -249,11 +262,80 @@ ppd still_bads
       end
     end
 
-    if !ok
-      impossible = true
-      break
-    end
+    still2_bads << b if !ok
   end
+
+ppd still2_bads
+
+  impossible = false
+  # まだダメなら自分と最寄りの矢印をペアに
+  still2_bads.each do |b|
+    ok = false
+    sy, sx = b[0], b[1]
+    next if m[sy][sx] == 'M'
+
+    py, px = b[0], b[1]
+    loop do
+      px += 1
+      break if (px < 0 || px >= c || py < 0 || py >= r)
+      if m[py][px] != '.'
+        m[sy][sx] = 'M'
+        m[py][px] = 'M'
+        changed += 2
+        ok = true
+        break
+      end
+    end
+    next if ok
+
+    py, px = b[0], b[1]
+    loop do
+      px -= 1
+      break if (px < 0 || px >= c || py < 0 || py >= r)
+      if m[py][px] != '.'
+        m[sy][sx] = 'M'
+        m[py][px] = 'M'
+        changed += 2
+        ok = true
+        break
+      end
+    end
+    next if ok
+
+    py, px = b[0], b[1]
+    loop do
+      py += 1
+      break if (px < 0 || px >= c || py < 0 || py >= r)
+      if m[py][px] != '.'
+        m[sy][sx] = 'M'
+        m[py][px] = 'M'
+        changed += 2
+        ok = true
+        break
+      end
+    end
+    next if ok
+
+    py, px = b[0], b[1]
+    loop do
+      py -= 1
+      break if (px < 0 || px >= c || py < 0 || py >= r)
+      if m[py][px] != '.'
+        m[sy][sx] = 'M'
+        m[py][px] = 'M'
+        changed += 2
+        ok = true
+        break
+      end
+    end
+    next if ok
+
+    impossible = true
+  end
+
+m.each do |l|
+  putsd l
+end
 
   if impossible
     puts "Case ##{case_index}: IMPOSSIBLE"
