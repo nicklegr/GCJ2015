@@ -52,28 +52,7 @@ def rws(count)
   words
 end
 
-# main
-t_start = Time.now
-
-cases = readline().to_i
-
-(1 .. cases).each do |case_index|
-  r, c = ris
-  m = rws(r)
-
-m.each do |l|
-  putsd l
-end
-
-
-  changed = 0
-
-  goods = Array.new(r) do |i|
-    Array.new(c) do |j|
-      0
-    end
-  end
-
+def check_loop(m, r, c, goods)
   # すでにループになってるやつ
   bads = []
   for y in 0...r
@@ -130,75 +109,110 @@ end
     end
   end
 
+  bads
+end
+
+# main
+t_start = Time.now
+
+cases = readline().to_i
+
+(1 .. cases).each do |case_index|
+  r, c = ris
+  m = rws(r)
+
+m.each do |l|
+  putsd l
+end
+
+
+  changed = 0
+
+  goods = Array.new(r) do |i|
+    Array.new(c) do |j|
+      0
+    end
+  end
+
 ppd goods
 
-bads.sort!
-bads.uniq!
-ppd bads
+  still_bad_count = -1
   still_bads = []
 
-  # ループに突っ込ませるか、自分の方向いてる矢印に向ける
-  bads.each do |b|
-    ok = false
-    sy, sx = b[0], b[1]
+  while still_bads.size != still_bad_count
+    still_bad_count = still_bads.size
+    still_bads = []
 
-    py, px = b[0], b[1]
-    loop do
-      px += 1
-      break if (px < 0 || px >= c || py < 0 || py >= r)
-      if goods[py][px] == 1 || m[py][px] == '<'
-        m[sy][sx] = '>'
-        changed += 1
-        ok = true
-        break
+    # ループに突っ込ませるか、自分の方向いてる矢印に向ける
+    bads = check_loop(m, r, c, goods)
+    bads.sort!
+    bads.uniq!
+    ppd bads
+
+    bads.each do |b|
+      ok = false
+      sy, sx = b[0], b[1]
+
+      py, px = b[0], b[1]
+      loop do
+        px += 1
+        break if (px < 0 || px >= c || py < 0 || py >= r)
+        if goods[py][px] == 1 || m[py][px] == '<'
+          m[sy][sx] = '>'
+          changed += 1
+          ok = true
+          break
+        end
+        break if m[py][px] != '.' && m[py][px] != '<'
       end
-      break if m[py][px] != '.' && m[py][px] != '<'
-    end
-    next if ok
+      next if ok
 
-    py, px = b[0], b[1]
-    loop do
-      px -= 1
-      break if (px < 0 || px >= c || py < 0 || py >= r)
-      if goods[py][px] == 1 || m[py][px] == '>'
-        m[sy][sx] = '<'
-        changed += 1
-        ok = true
-        break
+      py, px = b[0], b[1]
+      loop do
+        px -= 1
+        break if (px < 0 || px >= c || py < 0 || py >= r)
+        if goods[py][px] == 1 || m[py][px] == '>'
+          m[sy][sx] = '<'
+          changed += 1
+          ok = true
+          break
+        end
+        break if m[py][px] != '.' && m[py][px] != '>'
       end
-      break if m[py][px] != '.' && m[py][px] != '>'
-    end
-    next if ok
+      next if ok
 
-    py, px = b[0], b[1]
-    loop do
-      py += 1
-      break if (px < 0 || px >= c || py < 0 || py >= r)
-      if goods[py][px] == 1 || m[py][px] == '^'
-        m[sy][sx] = 'v'
-        changed += 1
-        ok = true
-        break
+      py, px = b[0], b[1]
+      loop do
+        py += 1
+        break if (px < 0 || px >= c || py < 0 || py >= r)
+        if goods[py][px] == 1 || m[py][px] == '^'
+          m[sy][sx] = 'v'
+          changed += 1
+          ok = true
+          break
+        end
+        break if m[py][px] != '.' && m[py][px] != '^'
       end
-      break if m[py][px] != '.' && m[py][px] != '^'
-    end
-    next if ok
+      next if ok
 
-    py, px = b[0], b[1]
-    loop do
-      py -= 1
-      break if (px < 0 || px >= c || py < 0 || py >= r)
-      if goods[py][px] == 1 || m[py][px] == 'v'
-        m[sy][sx] = '^'
-        changed += 1
-        ok = true
-        break
+      py, px = b[0], b[1]
+      loop do
+        py -= 1
+        break if (px < 0 || px >= c || py < 0 || py >= r)
+        if goods[py][px] == 1 || m[py][px] == 'v'
+          m[sy][sx] = '^'
+          changed += 1
+          ok = true
+          break
+        end
+        break if m[py][px] != '.' && m[py][px] != 'v'
       end
-      break if m[py][px] != '.' && m[py][px] != 'v'
-    end
-    next if ok
+      next if ok
 
-    still_bads << b
+      still_bads << b
+    end
+
+    bads = still_bads
   end
 
 m.each do |l|
